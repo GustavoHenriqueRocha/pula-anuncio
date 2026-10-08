@@ -4,6 +4,7 @@ $nome = "Pula Anuncio"
 Stop-ScheduledTask -TaskName $nome -ErrorAction SilentlyContinue
 Unregister-ScheduledTask -TaskName $nome -Confirm:$false -ErrorAction SilentlyContinue
 Get-NetFirewallRule -DisplayName $nome -ErrorAction SilentlyContinue | Remove-NetFirewallRule
+Get-NetFirewallRule -DisplayName "$nome (nome .local)" -ErrorAction SilentlyContinue | Remove-NetFirewallRule
 Get-Process pythonw -ErrorAction SilentlyContinue |
     Where-Object { (Get-CimInstance Win32_Process -Filter "ProcessId=$($_.Id)").CommandLine -like "*agente.py*" } |
     Stop-Process -Force

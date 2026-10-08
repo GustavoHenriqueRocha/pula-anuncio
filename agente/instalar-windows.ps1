@@ -37,13 +37,22 @@ New-NetFirewallRule -DisplayName $nome -Direction Inbound -Protocol TCP -LocalPo
     -Profile Any -RemoteAddress LocalSubnet | Out-Null
 Write-Host "Porta 8765 liberada para a rede local" -ForegroundColor Green
 
-# 5) Liga agora e confere
+# 5) mDNS: deixa o celular achar este PC por NOME.local mesmo em rede marcada como "Pública"
+Get-NetFirewallRule -DisplayName "$nome (nome .local)" -ErrorAction SilentlyContinue | Remove-NetFirewallRule
+New-NetFirewallRule -DisplayName "$nome (nome .local)" -Direction Inbound -Protocol UDP -LocalPort 5353 `
+    -Action Allow -Profile Any -RemoteAddress LocalSubnet | Out-Null
+Write-Host "Nome $($env:COMPUTERNAME.ToLower()).local liberado na rede local" -ForegroundColor Green
+
+# 6) Liga agora e confere
 Start-ScheduledTask -TaskName $nome
 Start-Sleep -Seconds 4
 try {
     Invoke-RestMethod http://127.0.0.1:8765/status -TimeoutSec 5 | Out-Null
     $ips = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.PrefixOrigin -eq "Dhcp" }).IPAddress -join ", "
-    Write-Host "`nPronto! Agente rodando. No celular, cadastre esta máquina com o IP: $ips" -ForegroundColor Green
+    $local = "$($env:COMPUTERNAME.ToLower()).local"
+    Write-Host "`nPronto! Agente rodando. No celular, cadastre esta máquina como:" -ForegroundColor Green
+    Write-Host "   $local   (funciona mesmo se o IP mudar)" -ForegroundColor Green
+    Write-Host "   ou pelo IP: $ips" -ForegroundColor Green
 } catch {
     Write-Host "`nA tarefa foi criada, mas o agente não respondeu. Teste rodando 'python agente.py' nesta pasta para ver o erro." -ForegroundColor Yellow
 }

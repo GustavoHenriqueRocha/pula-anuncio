@@ -75,6 +75,7 @@ O serviço sobe sozinho a cada login. Log: `journalctl --user -u pula-anuncio -f
 3. Dê dois cliques em **`instalar-windows.bat`** e aceite o pedido de administrador. Ele:
    - cria a tarefa agendada **Pula Anuncio** (ao entrar no Windows, sem janela, reinicia se cair);
    - libera a porta 8765 no firewall só para a rede local;
+   - libera o nome `NOME-DO-PC.local` (mDNS, porta 5353) na rede local, para achar o PC pelo nome;
    - liga o agente na hora e mostra o IP para cadastrar no celular.
 4. Para remover: **`desinstalar-windows.bat`**.
 
@@ -127,7 +128,8 @@ você digitar no campo de IP).
 
 **iPhone / pelo nome:** em vez do IP, use o nome do PC com `.local` (ex.: `arch-gustavo.local`).
 O iPhone resolve `.local` sozinho (Bonjour), então o endereço não muda quando troca o IP ou o
-Wi-Fi. No Linux precisa do `avahi-daemon` ligado; Windows 10/11 costuma responder ao nome também.
+Wi-Fi. No Linux precisa do `avahi-daemon` ligado; no Windows 10/11 o `instalar-windows.bat` libera o nome
+no firewall (sem isso, rede marcada como "Pública" bloqueia).
 Abra `http://NOME.local:8765/` no Safari e use **Compartilhar → Adicionar à Tela de Início**.
 
 ## Desenvolvimento
