@@ -37,7 +37,10 @@ agente/
   entrada.py             mouse e teclado virtuais (Wayland/Hyprland e Windows)
   web/                   página do celular (servida pelo agente)
   pula-anuncio.service   serviço systemd do usuário (Linux)
-  iniciar-windows.bat    inicia o agente sem janela (Windows)
+  instalar-windows.bat   instala no Windows: tarefa agendada escondida + firewall
+  desinstalar-windows.bat  remove do Windows (os .ps1 ao lado fazem o trabalho)
+android/
+  compilar-apk.sh        gera o APK do controle (WebView com agente/web embutida)
 extensao/
   chromium/              extensão para Chrome, Chromium, Edge e Opera GX (código-fonte)
   firefox/               mesma extensão com manifesto do Firefox
@@ -64,15 +67,20 @@ sudo ufw allow 8765/tcp          # se usar ufw: libera o acesso do celular
 
 O serviço sobe sozinho a cada login. Log: `journalctl --user -u pula-anuncio -f`.
 
-**Windows**:
+**Windows** — roda escondido, sobe sozinho quando você entra no Windows e volta se cair
+(igual ao serviço do Linux):
 
 1. Instale o Python em https://python.org (marque **Add python.exe to PATH**).
-2. Copie a pasta `agente` para o PC e dê dois cliques em `iniciar-windows.bat`.
-3. Para iniciar junto com o Windows: `Win+R` → `shell:startup` → cole ali um atalho do `.bat`.
-4. Libere a porta (PowerShell como administrador):
-   ```powershell
-   New-NetFirewallRule -DisplayName "Pula Anuncio" -Direction Inbound -Protocol TCP -LocalPort 8765 -Action Allow -Profile Private
-   ```
+2. Copie a pasta `agente` para o PC (por exemplo `C:\PulaAnuncio\agente`).
+3. Dê dois cliques em **`instalar-windows.bat`** e aceite o pedido de administrador. Ele:
+   - cria a tarefa agendada **Pula Anuncio** (ao entrar no Windows, sem janela, reinicia se cair);
+   - libera a porta 8765 no firewall só para a rede local;
+   - liga o agente na hora e mostra o IP para cadastrar no celular.
+4. Para remover: **`desinstalar-windows.bat`**.
+
+O agente precisa da sessão do usuário para mexer no mouse, por isso é tarefa agendada e não
+serviço do Windows. Para ele ligar sem digitar senha quando o PC liga, ative o login automático
+(`Win+R` → `netplwiz`). Se mudar a pasta de lugar, rode o instalador de novo.
 
 A porta pode ser trocada com a variável de ambiente `PULA_PORTA`.
 
@@ -102,14 +110,23 @@ embutido estiver ligado, nem aparece anúncio para pular.
 
 ### 3. Celular
 
-1. No mesmo Wi-Fi, abra `http://IP-DO-PC:8765/` (o IP aparece no log do agente).
-2. Use **Adicionar à tela inicial** no navegador do celular.
-3. Em **Máquinas cadastradas**, adicione os outros PCs por nome e IP. A lista fica salva no celular.
+**App Android** (recomendado): instale o `pula-anuncio.apk` (gerado por `android/compilar-apk.sh`,
+sai em `~/Downloads`). É a mesma página, embutida num app: abre em tela cheia, não apaga a tela
+e não precisa de um PC ligado para abrir. Cadastre as máquinas em **Máquinas cadastradas**.
+
+**Pelo navegador**: no mesmo Wi-Fi, abra `http://IP-DO-PC:8765/` (o IP aparece no log do agente)
+e use **Adicionar à tela inicial**.
+
+A lista de máquinas fica salva no celular (no app e no navegador ficam listas separadas).
 
 ## Desenvolvimento
 
 - O código da extensão fica em `extensao/chromium/`. Depois de editar, rode
   `extensao/sincronizar.sh` (o Firefox não segue links simbólicos, então os arquivos são copiados).
+- APK: `android/compilar-apk.sh [saída.apk]` monta sem Gradle (aapt2, javac, d8, apksigner). Precisa
+  do JDK 17 e do Android SDK (build-tools e platform 35) em `~/.local/share/android-build/{jdk,sdk}`.
+  A chave de assinatura fica em `~/.local/share/pula-anuncio/apk.jks`; sem ela, o celular não
+  aceita atualizar o app por cima (tem que desinstalar antes).
 - Validar a extensão do Firefox: `cd extensao/firefox && npx web-ext lint`.
 - Rodar o agente em primeiro plano: `python3 agente/agente.py` (ou `PULA_PORTA=8799 ...` para não
   conflitar com o serviço).
