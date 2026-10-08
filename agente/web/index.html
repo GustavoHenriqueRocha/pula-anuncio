@@ -76,6 +76,7 @@
   li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--borda); }
   li small { color: var(--sutil); }
   .remover { background: none; border: none; color: var(--vermelho); font: inherit; padding: 6px; }
+  #procurar { width: 100%; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -118,6 +119,7 @@
       <button class="btn">+</button>
     </form>
     <ul id="lista"></ul>
+    <button class="btn" id="procurar">🔎 Procurar PCs na rede</button>
   </details>
 
 <script>
@@ -193,14 +195,88 @@ async function atualizar() {
   try {
     const s = await pedir(m, "/status");
     estado[m.ip] = s.anuncio ? "ad" : "on";
+    if (m.host !== s.maquina) { m.host = s.maquina; salvar(); } // nome do PC: acha de novo se o IP mudar
     const conexao = ws?.readyState === WebSocket.OPEN ? "" : " · conectando controle…";
     $("status").textContent = (s.anuncio ? "Anúncio na tela" : s.maquina) + conexao;
   } catch {
     estado[m.ip] = "off";
     $("status").textContent = `${m.nome} não responde (${m.ip})`;
+    reencontrar(m);
   }
   desenhar();
 }
+
+// ---------- achar PCs na rede ----------
+// O roteador pode trocar o IP de um PC. Cada máquina guarda o nome do PC (m.host, vindo do /status);
+// se ela parar de responder, varremos a rede (/24 dos IPs conhecidos) atrás do agente com esse nome.
+function redes() {
+  const prefixos = new Set();
+  try { const r = window.Android?.rede(); if (r) prefixos.add(r); } catch {} // app Android: rede atual do celular
+  for (const m of maquinas) {
+    const p = m.ip.split(":")[0].split(".");
+    if (p.length === 4) prefixos.add(p.slice(0, 3).join("."));
+  }
+  const digitado = $("ip").value.trim().split(".");
+  if (digitado.length >= 3) prefixos.add(digitado.slice(0, 3).join("."));
+  if (!prefixos.size) ["192.168.0", "192.168.1"].forEach((p) => prefixos.add(p));
+  return [...prefixos];
+}
+
+async function varrer(aoAchar) {
+  const alvos = redes().flatMap((p) => Array.from({ length: 254 }, (_, i) => `${p}.${i + 1}`));
+  let proximo = 0;
+  async function trabalhador() {
+    while (proximo < alvos.length) {
+      const ip = alvos[proximo++];
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 1500);
+      try {
+        const r = await fetch(`http://${ip}:${PORTA_PADRAO}/status`, { signal: ctrl.signal });
+        const s = await r.json();
+        if (s.maquina) aoAchar(ip, s.maquina);
+      } catch {} finally { clearTimeout(t); }
+    }
+  }
+  await Promise.all(Array.from({ length: 40 }, trabalhador));
+}
+
+const ultimaBusca = {}; // host -> quando (ms)
+let varrendo = false;
+async function reencontrar(m) {
+  if (!m.host || varrendo || Date.now() - (ultimaBusca[m.host] || 0) < 60000) return;
+  ultimaBusca[m.host] = Date.now();
+  varrendo = true;
+  try {
+    await varrer((ip, nome) => {
+      const certa = maquinas.find((x) => x.host === nome);
+      if (certa && certa.ip.split(":")[0] !== ip) { certa.ip = ip; salvar(); conectar(); }
+    });
+  } finally { varrendo = false; }
+  atualizar();
+}
+
+$("procurar").onclick = async () => {
+  if (varrendo) return;
+  varrendo = true;
+  const botao = $("procurar");
+  botao.disabled = true;
+  botao.textContent = "Procurando…";
+  let novos = 0;
+  try {
+    await varrer((ip, nome) => {
+      const ja = maquinas.find((x) => x.host === nome || x.nome === nome || x.ip.split(":")[0] === ip);
+      if (ja) { ja.ip = ip; ja.host = nome; }
+      else { maquinas.push({ nome, ip, host: nome }); novos++; }
+      salvar(); desenhar();
+    });
+  } finally {
+    varrendo = false;
+    botao.disabled = false;
+    botao.textContent = "🔎 Procurar PCs na rede";
+  }
+  $("status").textContent = novos ? `${novos} PC(s) novo(s) encontrado(s)` : "Nenhum PC novo na rede";
+  conectar(); atualizar();
+};
 
 $("form").onsubmit = (e) => {
   e.preventDefault();

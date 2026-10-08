@@ -2,11 +2,13 @@
 <!-- App do controle: só um WebView com a página do celular (agente/web) embutida. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gustavo.pulaanuncio"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="2"
+    android:versionName="1.1">
 
     <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="35" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- descobrir a rede do celular para procurar os PCs nela -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- os agentes falam HTTP/WebSocket sem TLS na rede de casa -->
     <application

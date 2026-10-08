@@ -119,6 +119,12 @@ e use **Adicionar à tela inicial**.
 
 A lista de máquinas fica salva no celular (no app e no navegador ficam listas separadas).
 
+**IP mudou?** Cada máquina guarda o nome do PC. Se ela parar de responder, a página varre a rede
+(254 endereços, alguns segundos) atrás do agente com esse nome e atualiza o IP sozinha. O botão
+**🔎 Procurar PCs na rede** acha e cadastra todos os PCs com o agente. No app Android a busca
+inclui a rede em que o celular está; no navegador, só as redes dos IPs já cadastrados (ou a que
+você digitar no campo de IP).
+
 ## Desenvolvimento
 
 - O código da extensão fica em `extensao/chromium/`. Depois de editar, rode
