@@ -4,10 +4,14 @@
 # Ajuste o caminho do ExecStart se o projeto não estiver em ~/Projetos/pula-anuncio.
 [Unit]
 Description=Pula Anúncio - agente
+# Precisa da sessão gráfica (WAYLAND_DISPLAY e HYPRLAND_INSTANCE_SIGNATURE) para mexer no mouse e teclado.
+After=graphical-session.target
+PartOf=graphical-session.target
 
 [Service]
 ExecStart=/usr/bin/python3 -u %h/Projetos/pula-anuncio/agente/agente.py
-Restart=on-failure
+Restart=always
+RestartSec=3
 
 [Install]
-WantedBy=default.target
+WantedBy=graphical-session.target

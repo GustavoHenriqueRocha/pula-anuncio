@@ -5,3 +5,4 @@ __pycache__/
 # saída do web-ext (extensão do Firefox assinada)
 web-ext-artifacts/
 .web-extension-id
+.amo-upload-uuid
