@@ -30,23 +30,6 @@ PORTA = int(os.environ.get("PULA_PORTA", "8765"))
 PASTA_WEB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 ESPERA_RESPOSTA = 2.0  # segundos esperando as extensões responderem
-ARQUIVO_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
-
-
-def carregar_config():
-    try:
-        with open(ARQUIVO_CONFIG, encoding="utf-8") as f:
-            return {"auto": True, **json.load(f)}
-    except (OSError, ValueError):
-        return {"auto": True}
-
-
-def salvar_config():
-    with open(ARQUIVO_CONFIG, "w", encoding="utf-8") as f:
-        json.dump(config, f)
-
-
-config = carregar_config()
 entrada = modulo_entrada.criar()
 pulando = threading.Lock()  # um pulo de cada vez
 
@@ -210,8 +193,8 @@ def apertar_enter(titulo):
 
 
 def pular_sozinho():
-    """Chamado quando uma extensão avisa que o botão "Pular" apareceu."""
-    if not config["auto"] or not pulando.acquire(blocking=False):
+    """Chamado quando uma extensão avisa que o botão "Pular" apareceu. Sempre ligado."""
+    if not pulando.acquire(blocking=False):
         return
     try:
         r = pular()
@@ -244,7 +227,6 @@ def status():
         "maquina": socket.gethostname(),
         "navegadores": lista,
         "anuncio": any(c["anuncio"] for c in lista),
-        "auto": config["auto"],
     }
 
 
@@ -288,15 +270,6 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        if self.path == "/auto":
-            try:
-                corpo = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
-            except ValueError:
-                corpo = {}
-            config["auto"] = bool(corpo.get("ligado", not config["auto"]))
-            salvar_config()
-            print(f"[auto] {'ligado' if config['auto'] else 'desligado'}")
-            return self.responder_json(status())
         if self.path == "/skip":
             r = pular()
             print(f"[skip] conectados={r['conectados']} anuncio={r['anuncio']} "

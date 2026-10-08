@@ -4,7 +4,7 @@ Três peças, todas na rede local:
 
 | Peça | Onde roda | Papel |
 |---|---|---|
-| **Página do celular** (`agente/web/`) | navegador do celular | touchpad, teclado e interruptor; guarda a lista de máquinas no `localStorage` |
+| **Página do celular** (`agente/web/`) | navegador do celular | touchpad e teclado; guarda a lista de máquinas no `localStorage` |
 | **Agente** (`agente/agente.py`, `agente/entrada.py`) | cada PC, porta 8765 | serve a página, injeta mouse/teclado no sistema e coordena o pulo de anúncio |
 | **Extensão** (`extensao/`) | navegador de cada PC | enxerga o YouTube: detecta anúncio e foca o botão "Pular" |
 
@@ -16,8 +16,7 @@ respondem com CORS liberado e o WebSocket não tem restrição de origem.
 | Rota | Quem usa | O que faz |
 |---|---|---|
 | `GET /` | celular | página do controle (arquivos de `agente/web/`) |
-| `GET /status` | celular | `{maquina, navegadores: [{navegador, anuncio}], anuncio, auto}` |
-| `POST /auto` | celular | corpo `{"ligado": true/false}`; liga/desliga o pular sozinho (salvo em `agente/config.json`) |
+| `GET /status` | celular | `{maquina, navegadores: [{navegador, anuncio}], anuncio}` |
 | `POST /skip` | qualquer um | pula o anúncio agora; responde `{conectados, anuncio, clicou, motivo}` |
 | `WS /controle` | celular | mouse e teclado (mensagens abaixo) |
 | `WS /ws` | extensão | comandos e avisos do YouTube (mensagens abaixo) |
@@ -68,7 +67,7 @@ O YouTube ignora cliques gerados por script (`isTrusted = false`), então a exte
 
 1. `content.js` olha a página a cada 0,5 s. Com anúncio na tela (`#movie_player.ad-showing`) e o
    botão "Pular" visível, avisa o background, que manda `{"tipo":"pode_pular"}` ao agente.
-2. Se o pular sozinho estiver ligado, o agente manda `{"cmd":"preparar"}` para as extensões.
+2. O agente (sempre ligado) manda `{"cmd":"preparar"}` para as extensões.
    Cada aba visível do YouTube foca o botão "Pular" e responde `{pronto, anuncio, titulo}`.
 3. O agente procura a janela do navegador pelo título da aba, traz para a frente
    (`hyprctl dispatch focuswindow` ou `SetForegroundWindow`), aperta **Enter de verdade**
