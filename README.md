@@ -95,7 +95,10 @@ Só é necessária para o **pular anúncio**; o mouse e o teclado funcionam sem 
 2. Ligue o **Modo do desenvolvedor**.
 3. **Carregar sem compactação** → escolha a pasta `extensao/chromium`.
 
-Ela continua instalada depois de fechar o navegador. No Opera GX, se o bloqueador de anúncios
+Ela continua instalada depois de fechar o navegador. Depois de instalar, **recarregue (F5) as abas do YouTube** que já
+estavam abertas — elas não recebem o script. Se o celular nunca mostra "Anúncio na tela", abra os
+**Detalhes** da extensão e deixe **Acesso ao site** em "Em todos os sites" (o Opera às vezes vem com
+"Ao clicar"). O player do YouTube na barra lateral do Opera GX não é suportado; use uma aba normal. No Opera GX, se o bloqueador de anúncios
 embutido estiver ligado, nem aparece anúncio para pular.
 
 **Firefox**
