@@ -50,8 +50,8 @@ O celular junta os movimentos de cada quadro de animação numa mensagem só, ap
 
 ### Botão travado
 
-O celular manda `down:true` ao encostar no botão Esquerdo/Direito. Se o dedo sair antes de 2 s,
-manda `down:false` (clique normal). Se passar de 2 s, não manda nada ao soltar — o botão fica
+O celular manda `down:true` ao encostar no botão Esquerdo/Direito. Se o dedo sair antes de 1 s,
+manda `down:false` (clique normal). Se passar de 1 s, não manda nada ao soltar — o botão fica
 apertado no PC — e o próximo toque nele (ou no touchpad) manda `down:false`. Ao trocar de máquina
 ou sair da página, os botões travados são soltos.
 

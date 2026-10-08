@@ -50,7 +50,7 @@
   .mb.apertado { background: #2c2c2e; }
   .mb.travado { background: var(--azul); border-color: var(--azul); color: #fff; }
   .mb .carga { position: absolute; left: 0; bottom: 0; height: 4px; width: 0; background: var(--azul); }
-  .mb.carregando .carga { width: 100%; transition: width 2s linear; }
+  .mb.carregando .carga { width: 100%; transition: width 1s linear; }
 
   .teclado { display: flex; flex-direction: column; gap: 8px; }
   #texto {
@@ -122,7 +122,7 @@
 
 <script>
 const PORTA_PADRAO = 8765;
-const SEGURAR_PARA_TRAVAR = 2000; // ms
+const SEGURAR_PARA_TRAVAR = 1000; // ms (manter igual à transição de .carga)
 const $ = (id) => document.getElementById(id);
 
 // ---------- máquinas ----------
@@ -283,7 +283,7 @@ function fimToque(e) {
 pad.addEventListener("touchend", fimToque, { passive: false });
 pad.addEventListener("touchcancel", fimToque, { passive: false });
 
-// ---------- botões Esquerdo / Direito (segurar 2 s trava) ----------
+// ---------- botões Esquerdo / Direito (segurar 1 s trava) ----------
 const travado = { left: false, right: false };
 const elBotao = (b) => document.querySelector(`.mb[data-b="${b}"]`);
 

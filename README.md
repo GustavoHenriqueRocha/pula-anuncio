@@ -23,7 +23,7 @@ A página é vertical, de cima para baixo:
 |---|---|
 | **Máquinas** | Chips no topo para escolher o PC. Bolinha verde = online, amarela = anúncio na tela, vermelha = sem resposta. |
 | **Touchpad** | 1 dedo move o mouse · toque = clique esquerdo · toque com 2 dedos = clique direito · arrastar com 2 dedos = rolar. |
-| **Esquerdo / Direito** | Toque = clique. **Segurar 2 s trava** o botão apertado (fica azul) para arrastar coisas; tocar de novo solta. |
+| **Esquerdo / Direito** | Toque = clique. **Segurar 1 s trava** o botão apertado (fica azul) para arrastar coisas; tocar de novo solta. |
 | **Teclado** | O campo de texto digita no PC (acentos e corretor do celular funcionam). Teclas: Esc, Tab, setas, ⌫, Enter, Tela (F11), Início, Fim, play/pause e volume. |
 | **Pular anúncio** | Não fica no celular: o agente de cada PC pula sozinho, sempre ligado. Quando o botão "Pular" do YouTube aparece, ele clica. |
 
