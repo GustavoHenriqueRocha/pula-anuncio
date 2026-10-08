@@ -266,7 +266,8 @@ pad.addEventListener("touchmove", (e) => {
   if (toques.size === 1) {
     acumX += acelerar(somaX); acumY += acelerar(somaY);
   } else {
-    rolX += (somaX / n) * 1.5; rolY += (somaY / n) * 1.5;
+    // rolagem natural (como no touchpad/celular): o conteúdo acompanha o dedo
+    rolX -= (somaX / n) * 1.5; rolY -= (somaY / n) * 1.5;
   }
   agendar();
 }, { passive: false });
