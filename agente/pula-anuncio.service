@@ -1,0 +1,13 @@
+# Serviço do usuário para Linux (systemd). Instale com:
+#   cp agente/pula-anuncio.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now pula-anuncio
+# Ajuste o caminho do ExecStart se o projeto não estiver em ~/Projetos/pula-anuncio.
+[Unit]
+Description=Pula Anúncio - agente
+
+[Service]
+ExecStart=/usr/bin/python3 -u %h/Projetos/pula-anuncio/agente/agente.py
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

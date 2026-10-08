@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "Pula Anúncio",
+  "version": "1.0.0",
+  "description": "Recebe o comando do celular (via agente local) e clica em Pular anúncio no YouTube.",
+  "permissions": [
+    "tabs",
+    "alarms",
+    "*://*.youtube.com/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pula-anuncio@local",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  }
+}

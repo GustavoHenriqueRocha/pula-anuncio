@@ -1,0 +1,7 @@
+# configuração local do agente (interruptor "pular sozinho")
+agente/config.json
+__pycache__/
+*.pyc
+# saída do web-ext (extensão do Firefox assinada)
+web-ext-artifacts/
+.web-extension-id

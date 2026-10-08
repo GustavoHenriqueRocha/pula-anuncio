@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Pula Anúncio",
+  "version": "1.0.0",
+  "description": "Recebe o comando do celular (via agente local) e clica em Pular anúncio no YouTube.",
+  "permissions": ["tabs", "alarms"],
+  "host_permissions": ["*://*.youtube.com/*", "http://127.0.0.1/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{ "matches": ["*://*.youtube.com/*"], "js": ["content.js"], "run_at": "document_idle" }]
+}
