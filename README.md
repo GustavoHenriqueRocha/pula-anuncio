@@ -125,6 +125,11 @@ A lista de máquinas fica salva no celular (no app e no navegador ficam listas s
 inclui a rede em que o celular está; no navegador, só as redes dos IPs já cadastrados (ou a que
 você digitar no campo de IP).
 
+**iPhone / pelo nome:** em vez do IP, use o nome do PC com `.local` (ex.: `arch-gustavo.local`).
+O iPhone resolve `.local` sozinho (Bonjour), então o endereço não muda quando troca o IP ou o
+Wi-Fi. No Linux precisa do `avahi-daemon` ligado; Windows 10/11 costuma responder ao nome também.
+Abra `http://NOME.local:8765/` no Safari e use **Compartilhar → Adicionar à Tela de Início**.
+
 ## Desenvolvimento
 
 - O código da extensão fica em `extensao/chromium/`. Depois de editar, rode
