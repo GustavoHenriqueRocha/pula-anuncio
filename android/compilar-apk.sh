@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Gera o APK do controle sem Gradle: aapt2 + javac + d8 + apksigner.
 #
-#   android/compilar-apk.sh [saída.apk]      (padrão: ~/Downloads/pula-anuncio.apk)
+#   android/compilar-apk.sh [saída.apk]      (padrão: ~/Downloads/mouse.apk)
 #
 # Precisa do JDK 17 e do Android SDK (build-tools 35 + platform 35). Caminhos:
 #   ANDROID_BUILD=~/.local/share/android-build  (com jdk/ e sdk/ dentro)
@@ -10,7 +10,7 @@
 set -euo pipefail
 
 aqui="$(cd "$(dirname "$0")" && pwd)"
-saida="${1:-$HOME/Downloads/pula-anuncio.apk}"
+saida="${1:-$HOME/Downloads/mouse.apk}"
 base="${ANDROID_BUILD:-$HOME/.local/share/android-build}"
 export JAVA_HOME="$base/jdk"
 export PATH="$JAVA_HOME/bin:$PATH"  # d8 e apksigner chamam "java" direto

@@ -10,7 +10,7 @@
 
     <!-- os agentes falam HTTP/WebSocket sem TLS na rede de casa -->
     <application
-        android:label="Pula Anúncio"
+        android:label="Mouse"
         android:icon="@mipmap/icone"
         android:usesCleartextTraffic="true"
         android:theme="@android:style/Theme.Material.NoActionBar">

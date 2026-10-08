@@ -110,7 +110,7 @@ embutido estiver ligado, nem aparece anúncio para pular.
 
 ### 3. Celular
 
-**App Android** (recomendado): instale o `pula-anuncio.apk` (gerado por `android/compilar-apk.sh`,
+**App Android** (recomendado): instale o `mouse.apk` (app "Mouse") (gerado por `android/compilar-apk.sh`,
 sai em `~/Downloads`). É a mesma página, embutida num app: abre em tela cheia, não apaga a tela
 e não precisa de um PC ligado para abrir. Cadastre as máquinas em **Máquinas cadastradas**.
 
